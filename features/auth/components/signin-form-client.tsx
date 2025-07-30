@@ -1,3 +1,5 @@
+"use client"
+import React from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -7,45 +9,42 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { signIn } from "@/lib/auth";
 import { Chrome, Github } from "lucide-react";
-import React from "react";
+import { signIn } from "next-auth/react";
 
-async function handleGoogleSignIn() {
-  "use server";
-  await signIn("google")
-}
 
-async function handleGighubSignIn() {
-  "use server";
-  await signIn("github")
-}
 
 const SignInFormClient = () => {
+  const handleGoogleSignIn = (e: React.FormEvent) => {
+    e.preventDefault();
+    signIn("google");
+  };
+
+  const handleGithubSignIn = (e: React.FormEvent) => {
+    e.preventDefault();
+    signIn("github");
+  };
   return (
-    <Card className="w-full max-w-md ">
+    <Card className="w-full max-w-md">
       <CardHeader className="space-y-1">
         <CardTitle className="text-2xl font-bold text-center">
           Sign In
         </CardTitle>
-
         <CardDescription className="text-center">
-          Choose your prefferered Sign-in Method
+          Choose your preferred sign-in method
         </CardDescription>
-
       </CardHeader>
 
       <CardContent className="grid gap-4">
-        <form action={handleGoogleSignIn}>
+        <form onSubmit={handleGoogleSignIn}>
           <Button type="submit" variant={"outline"} className="w-full">
-            <Chrome className="mr-2 w-4" />
+            <Chrome className="mr-2 h-4 w-4" />
             <span>Sign in with google</span>
           </Button>
         </form>
-
-        <form action={handleGighubSignIn}>
+        <form onSubmit={handleGithubSignIn}>
           <Button type="submit" variant={"outline"} className="w-full">
-            <Github className="mr-2 w-4" />
+            <Github className="mr-2 h-4 w-4" />
             <span>Sign in with github</span>
           </Button>
         </form>

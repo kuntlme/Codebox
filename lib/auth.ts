@@ -5,15 +5,15 @@ import { getAccountbyUserId, getUserById } from "@/features/auth/actions";
 import authConfig from "./auth.config";
 
 
- 
 
- 
-export const { auth, handlers, signIn, signOut } = NextAuth({
+
+
+export const authOptions = {
   callbacks: {
     /**
      * Handle user creation and account linking after a successful sign-in
      */
-    async signIn({ user, account, profile }) {
+    async signIn({ user, account }) {
       if (!user || !account) return false;
 
       // Check if the user already exists
@@ -28,7 +28,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
             email: user.email!,
             name: user.name,
             image: user.image,
-           
+
             accounts: {
               create: {
                 type: account.type,
@@ -67,7 +67,7 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
               type: account.type,
               provider: account.provider,
               providerAccountId: account.providerAccountId,
-                // @ts-expect-error typeerror
+              // @ts-expect-error typeerror
               refreshToken: account.refresh_token,
               accessToken: account.access_token,
               expiresAt: account.expires_at,
@@ -83,11 +83,11 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
       return true;
     },
 
-    async jwt({ token, user, account }) {
-      if(!token.sub) return token;
+    async jwt({ token }) {
+      if (!token.sub) return token;
       const existingUser = await getUserById(token.sub)
 
-      if(!existingUser) return token;
+      if (!existingUser) return token;
 
       const exisitingAccount = await getAccountbyUserId(existingUser.id);
 
@@ -100,21 +100,23 @@ export const { auth, handlers, signIn, signOut } = NextAuth({
 
     async session({ session, token }) {
       // Attach the user ID from the token to the session
-    if(token.sub  && session.user){
-              // @ts-expect-error typeerror
-      session.user.id = token.sub
-    } 
+      if (token.sub && session.user) {
+        // @ts-expect-error typeerror
+        session.user.id = token.sub
+      }
 
-    if(token.sub && session.user){
-      session.user.role = token.role
-    }
+      if (token.sub && session.user) {
+        session.user.role = token.role
+      }
 
-    return session;
+      return session;
     },
   },
-  
+
   secret: process.env.NEXTAUTH_SECRET,
   adapter: PrismaAdapter(db),
-  session: { strategy: "jwt" },
+  session: { strategy: "jwt" as const },
   ...authConfig,
-})
+};
+
+export const handler = NextAuth(authOptions)

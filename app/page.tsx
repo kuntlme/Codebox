@@ -1,5 +1,5 @@
 export default function Home() {
   return (
-    <div></div>
+    <div className="bg-zinc-800 h-screen">welcome</div>
   );
 }

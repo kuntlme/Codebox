@@ -2,7 +2,7 @@ import { NextAuthOptions } from "next-auth"
 import GitHub from "next-auth/providers/github"
 import Google from "next-auth/providers/google"
 
-export default{
+const authConfig: NextAuthOptions = {
     providers:[
         GitHub({
             clientId:process.env.AUTH_GITHUB_ID!,
@@ -13,4 +13,6 @@ export default{
             clientSecret:process.env.AUTH_GOOGLE_SECRET!,
         })
     ]
-} satisfies NextAuthOptions
+}
+
+export default authConfig;
