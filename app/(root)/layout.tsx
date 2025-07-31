@@ -5,7 +5,7 @@ import React from 'react'
 
 const HomeLayout = ({children}: {children: React.ReactNode}) => {
   return (
-    <div className='bg-white dark:bg-zinc-800'>
+    <div className=''>
     {/* header */}
     <Header/>
     {/* main */}
