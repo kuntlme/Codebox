@@ -25,6 +25,9 @@ model User {
   email String  @unique
   image String?
 
+  myPlayground      Playground[]
+  starredPlayground StarMark[]
+
   accounts   Account[]
   role       UserRole  @default(USER)
   created_At DateTime  @default(now())
@@ -49,4 +52,41 @@ model Account {
 
   @@unique([provider, providerAccountId])
   @@index([userId])
+}
+
+enum Templetes {
+  REACT
+  EXPRESS
+  VUE
+  HONO
+  ANGULAR
+}
+
+model Playground {
+  id          String    @id @map("_id")
+  title       String
+  description String
+  template    Templetes @default(REACT)
+
+  starmark StarMark[]
+  userId   String
+  user     User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // TODO: add here templatefiles
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model StarMark {
+  id           String     @id @default(cuid()) @map("_id")
+  userId       String
+  playgroundId String
+  isMarked     Boolean
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  playground   Playground @relation(fields: [playgroundId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, playgroundId])
 }
