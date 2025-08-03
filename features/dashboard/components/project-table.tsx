@@ -13,6 +13,15 @@ import {
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { Copy, Download, Edit3, ExternalLink, Eye, MoreHorizontal, Trash2 } from "lucide-react";
 
 interface ProjectTableProps {
   projects: Project[];
@@ -32,6 +41,24 @@ const ProjectTable = ({
   onDuclicateProject,
   onUpdateProject,
 }: ProjectTableProps) => {
+
+    const handleEditClick = (project: any) => {
+
+    }
+
+    const handleDuplicateProject = (project: any) => {
+        
+    }
+
+    const copyProjectUrl = (project: any) => {
+        
+    }
+
+    const handleDeleteClick = (project: any) => {
+        
+    }
+
+
   return (
     <>
       <div className="border rounded-lg overflow-hidden">
@@ -88,7 +115,67 @@ const ProjectTable = ({
                   </div>
                 </TableCell>
                 <TableCell>
-                    
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="icon" className="h-8 w-8">
+                        <MoreHorizontal className="h-4 w-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent>
+                      <DropdownMenuItem asChild>
+                        {/* <MarkedToggleButton
+                          markedForRevision={project.Starmark[0]?.isMarked}
+                          id={project.id}
+                        /> */}
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link
+                          href={`/playground/${project.id}`}
+                          className="flex items-center"
+                        >
+                          <Eye className="h-4 w-4 mr-2" />
+                          Open Project
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link
+                          href={`/playground/${project.id}`}
+                          target="_blank"
+                          className="flex items-center"
+                        >
+                          <ExternalLink className="h-4 w-4 mr-2" />
+                          Open in New Tab
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        onClick={() => handleEditClick(project)}
+                      >
+                        <Edit3 className="h-4 w-4 mr-2" />
+                        Edit Project
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => handleDuplicateProject(project)}
+                      >
+                        <Copy className="h-4 w-4 mr-2" />
+                        Duplicate
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() => copyProjectUrl(project.id)}
+                      >
+                        <Download className="h-4 w-4 mr-2" />
+                        Copy URL
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem
+                        onClick={() => handleDeleteClick(project)}
+                        className="text-destructive focus:text-destructive"
+                      >
+                        <Trash2 className="h-4 w-4 mr-2" />
+                        Delete Project
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </TableCell>
               </TableRow>
             ))}

@@ -1,5 +1,5 @@
 import EmptyState from "@/components/empty-state";
-import { getAllPlaygroundForUser } from "@/features/dashboard/actions";
+import { deleteProjectById, duclicateProjectById, editProjectById, getAllPlaygroundForUser } from "@/features/dashboard/actions";
 import AddNewButton from "@/features/dashboard/components/add-new-button";
 import AddRepoButton from "@/features/dashboard/components/add-repo-button";
 import ProjectTable from "@/features/dashboard/components/project-table";
@@ -19,11 +19,13 @@ const page = async () => {
         ) : (
           playgrounds.map((playground) => {
             return (
+
+              // TODO: Need to update the types of the playground
               <ProjectTable 
                 projects={playground}
-                onDeleteProject={() => {}}
-                onUpdateProject={() => {}}
-                onDuclicateProject={() => {}}
+                onDeleteProject={deleteProjectById}
+                onUpdateProject={editProjectById}
+                onDuclicateProject={duclicateProjectById}
               />
             )
           })
