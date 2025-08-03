@@ -1,6 +1,7 @@
 "use server"
+import { authOptions } from "@/lib/auth";
 import { db } from "@/lib/db"
-import { auth } from "@/lib/auth";
+import { getServerSession } from "next-auth";
 
 export const getUserById = async (id: string) => {
     try {
@@ -32,6 +33,13 @@ export const getAccountbyUserId = async (userId: string) => {
 
 
 export const currentUser = async () => {
-    const user = await auth;
-    return user.user;
+    const session = await getServerSession(authOptions);
+    if (!session?.user?.email) return null;
+
+    // Assuming getUserById can accept email, otherwise adjust accordingly
+    const user = await db.user.findUnique({
+        where: { email: session.user.email },
+    });
+
+    return user;
 }
