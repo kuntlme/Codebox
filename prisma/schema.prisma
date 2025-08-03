@@ -63,7 +63,7 @@ enum Templetes {
 }
 
 model Playground {
-  id          String    @id @map("_id")
+  id          String  @default(cuid())   @id @map("_id")
   title       String
   description String
   template    Templetes @default(REACT)
