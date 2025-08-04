@@ -3,10 +3,19 @@
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import Image from "next/image";
+import { useState } from "react";
+import TemplateSelectModal from "./template-selection-modal";
 
 
 const AddNewButton = () => {
-
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [seletectedTemplate, setSelectedTemplate] = useState<
+  {
+    title: string;
+    template: "REACT" | "NEXTJS" | "EXPRESS" | "VUE" | "HONO" | "ANGULAR";
+    description?: string;
+  } | null
+  >(null);
   return (
     <>
       <div
@@ -15,6 +24,7 @@ const AddNewButton = () => {
         hover:bg-background hover:border-[#E93F3F] hover:scale-[1.02]
         shadow-[0_2px_10px_rgba(0,0,0,0.08)]
         hover:shadow-[0_10px_30px_rgba(233,63,63,0.15)]"
+        onClick={() => setIsModalOpen(true)}
       >
         <div className="flex flex-row justify-center items-start gap-4">
           <Button
@@ -40,6 +50,12 @@ const AddNewButton = () => {
           />
         </div>
       </div>
+
+      <TemplateSelectModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={() => {}}
+      />
     </>
   )
 }
