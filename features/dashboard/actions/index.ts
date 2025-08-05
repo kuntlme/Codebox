@@ -8,8 +8,7 @@ import { revalidatePath } from "next/cache"
 export const createPlayground = async (data: {
     title: string,
     template: Templetes,
-    description: string,
-    userId: string
+    description?: string,
 }) => {
     const { template, title, description } = data;
     const user = await currentUser();
@@ -51,6 +50,7 @@ export const getAllPlaygroundForUser = async() => {
                 }
             }
         })
+        return playground;
     }catch(error){
         console.log(error)
         return null;
