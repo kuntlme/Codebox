@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { Project } from "../types";
 import { format } from "date-fns";
 import {
@@ -21,7 +21,27 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { Copy, Download, Edit3, ExternalLink, Eye, MoreHorizontal, Trash2 } from "lucide-react";
+import {
+  Copy,
+  Download,
+  Edit3,
+  ExternalLink,
+  Eye,
+  MoreHorizontal,
+  Trash2,
+} from "lucide-react";
+import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 
 interface ProjectTableProps {
   projects: Project[];
@@ -41,23 +61,46 @@ const ProjectTable = ({
   onDuclicateProject,
   onUpdateProject,
 }: ProjectTableProps) => {
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [editData, setEditData] = useState<EditProjectData>({
+    title: "",
+    description: "",
+  });
+  const [isLoading, setIsLoading] = useState(false);
+  const [favourite, setFavourite] = useState(false);
 
-    const handleEditClick = (project: any) => {
+  const handleEditClick = (project: Project) => {
+    setSelectedProject(project);
+    setEditData({
+      title: project.title,
+      description: project?.description || "",
+    });
+    setEditDialogOpen(true);
+  };
 
+  const handleUpdateProject = async () => {
+    if (!selectedProject || !onUpdateProject) return;
+    setIsLoading(true);
+    try {
+      await onUpdateProject(selectedProject.id, editData);
+      setEditDialogOpen(false);
+      setSelectedProject(null);
+      toast.success("Project Updated Successfully");
+    } catch (error) {
+      toast.error("Failed to update project");
+      console.log("Error updating project", error);
+    } finally {
+      setIsLoading(false);
     }
+  };
 
-    const handleDuplicateProject = (project: any) => {
-        
-    }
+  const handleDuplicateProject = (project: any) => {};
 
-    const copyProjectUrl = (project: any) => {
-        
-    }
+  const copyProjectUrl = (project: any) => {};
 
-    const handleDeleteClick = (project: any) => {
-        
-    }
-
+  const handleDeleteClick = (project: any) => {};
 
   return (
     <>
@@ -182,6 +225,67 @@ const ProjectTable = ({
           </TableBody>
         </Table>
       </div>
+
+      <Dialog open={editDialogOpen} onOpenChange={setEditDialogOpen}>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Edit Project</DialogTitle>
+
+            <DialogDescription>
+              Make changes to your project details here. Click save when you're
+              done.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="title">Project title</Label>
+
+              <Input
+                id="title"
+                value={editData.title}
+                onChange={(e) =>
+                  setEditData((prev) => ({ ...prev, title: e.target.value }))
+                }
+                placeholder="Enter project title"
+              />
+            </div>
+
+            <div className="grid gap-2">
+              <Label htmlFor="description">Project description</Label>
+              <Textarea
+                id="description"
+                value={editData.description}
+                onChange={(e) =>
+                  setEditData((prev) => ({
+                    ...prev,
+                    description: e.target.value,
+                  }))
+                }
+                placeholder="Enter project description"
+                rows={3}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant={"outline"}
+              onClick={() => setEditDialogOpen(false)}
+              disabled={isLoading}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              variant={"default"}
+              onClick={handleUpdateProject}
+            >
+              {isLoading ? "Saving" : "Save Changes"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
