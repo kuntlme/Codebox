@@ -45,9 +45,12 @@ import { Textarea } from "@/components/ui/textarea";
 
 interface ProjectTableProps {
   projects: Project[];
-  onUpdateProject?: Function;
-  onDeleteProject?: Function;
-  onDuclicateProject?: Function;
+  onUpdateProject?: (
+    id: string,
+    data: { title: string; description: string }
+  ) => Promise<void>;
+  onDeleteProject?: (id: string) => Promise<void>;
+  onDuclicateProject?: (id: string) => Promise<void>;
 }
 
 interface EditProjectData {
@@ -96,7 +99,20 @@ const ProjectTable = ({
     }
   };
 
-  const handleDuplicateProject = (project: any) => {};
+  const handleDuplicateProject = async (project: any) => {
+    if (!onDuclicateProject) return;
+
+    setIsLoading(true);
+    try {
+      await onDuclicateProject(project.id);
+      toast.success("Project Duclicated successfully");
+    } catch (error) {
+      toast.error("Failed to duclicate project");
+      console.log("Error while duclicating project", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const copyProjectUrl = (project: any) => {};
 
