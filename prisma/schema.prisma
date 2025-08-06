@@ -60,12 +60,13 @@ enum Templetes {
   VUE
   HONO
   ANGULAR
+  NEXTJS
 }
 
 model Playground {
   id          String  @default(cuid())   @id @map("_id")
   title       String
-  description String
+  description String?
   template    Templetes @default(REACT)
 
   starmark StarMark[]

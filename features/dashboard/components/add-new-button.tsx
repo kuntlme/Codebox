@@ -5,17 +5,32 @@ import { Plus } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 import TemplateSelectModal from "./template-selection-modal";
-
+import { createPlayground } from "../actions";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const AddNewButton = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [seletectedTemplate, setSelectedTemplate] = useState<
-  {
+  const [seletectedTemplate, setSelectedTemplate] = useState<{
     title: string;
     template: "REACT" | "NEXTJS" | "EXPRESS" | "VUE" | "HONO" | "ANGULAR";
     description?: string;
-  } | null
-  >(null);
+  } | null>(null);
+  const router = useRouter();
+
+  const handleSubmit = async (data: {
+    title: string;
+    template: "REACT" | "NEXTJS" | "EXPRESS" | "VUE" | "HONO" | "ANGULAR";
+    description?: string;
+  }) => {
+    const res = await createPlayground(data);
+    toast.success("Playground created successfully");
+
+    setIsModalOpen(false);
+
+    // TODO: redirect to playground route
+    router.push(`/playground/${res.id}`)
+  };
   return (
     <>
       <div
@@ -32,11 +47,16 @@ const AddNewButton = () => {
             className="flex justify-center items-center bg-white group-hover:bg-[#fff8f8] group-hover:border-[#E93F3F] group-hover:text-[#E93F3F] transition-colors duration-300"
             size={"icon"}
           >
-            <Plus size={30} className="transition-transform duration-300 group-hover:rotate-90" />
+            <Plus
+              size={30}
+              className="transition-transform duration-300 group-hover:rotate-90"
+            />
           </Button>
           <div className="flex flex-col">
             <h1 className="text-xl font-bold text-[#e93f3f]">Add New</h1>
-            <p className="text-sm text-muted-foreground max-w-[220px]">Create a new playground</p>
+            <p className="text-sm text-muted-foreground max-w-[220px]">
+              Create a new playground
+            </p>
           </div>
         </div>
 
@@ -54,10 +74,10 @@ const AddNewButton = () => {
       <TemplateSelectModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        onSubmit={() => {}}
+        onSubmit={handleSubmit}
       />
     </>
-  )
-}
+  );
+};
 
-export default AddNewButton
+export default AddNewButton;

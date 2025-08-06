@@ -17,18 +17,16 @@ const page = async () => {
         {playgrounds && playgrounds.length === 0 ? (
           <EmptyState title="No project found" description="Create a new project to get started" imageSrc="/empty-state.svg"/>
         ) : (
-          playgrounds.map((playground) => {
-            return (
+
 
               // TODO: Need to update the types of the playground
               <ProjectTable 
-                projects={playground}
+                projects={playgrounds}
                 onDeleteProject={deleteProjectById}
                 onUpdateProject={editProjectById}
                 onDuclicateProject={duclicateProjectById}
               />
-            )
-          })
+
         )}
       </div>
     </div>
