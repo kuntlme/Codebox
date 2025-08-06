@@ -99,7 +99,7 @@ const ProjectTable = ({
     }
   };
 
-  const handleDuplicateProject = async (project: any) => {
+  const handleDuplicateProject = async (project: Project) => {
     if (!onDuclicateProject) return;
 
     setIsLoading(true);
@@ -114,7 +114,11 @@ const ProjectTable = ({
     }
   };
 
-  const copyProjectUrl = (project: any) => {};
+  const copyProjectUrl = async (projectId: string) => {
+    const url = `${window.location.origin}/playground/${projectId}}`
+    navigator.clipboard.writeText(url);
+    toast.success("Project url copied to clipboard")
+  };
 
   const handleDeleteClick = (project: any) => {};
 
