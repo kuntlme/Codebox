@@ -42,6 +42,16 @@ import {
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 interface ProjectTableProps {
   projects: Project[];
@@ -115,12 +125,32 @@ const ProjectTable = ({
   };
 
   const copyProjectUrl = async (projectId: string) => {
-    const url = `${window.location.origin}/playground/${projectId}}`
+    const url = `${window.location.origin}/playground/${projectId}}`;
     navigator.clipboard.writeText(url);
-    toast.success("Project url copied to clipboard")
+    toast.success("Project url copied to clipboard");
   };
 
-  const handleDeleteClick = (project: any) => {};
+  const handleDeleteClick = (project: any) => {
+    setSelectedProject(project);
+    setDeleteDialogOpen(true);
+  };
+
+  const handleDeleteProject = async () => {
+    setIsLoading(true);
+
+    try {
+      if(!selectedProject || !onDeleteProject) return;
+      await onDeleteProject(selectedProject?.id);
+      setDeleteDialogOpen(false);
+      setSelectedProject(null);
+      toast.success("Project deleted successfully");
+    } catch (error) {
+      toast.error("Failed to delete project");
+      console.log("Error while deleting project", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
 
   return (
     <>
@@ -306,6 +336,29 @@ const ProjectTable = ({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Project</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete <span className="font-semibold text-red-400">{selectedProject?.title}?</span> This
+              action cannot be undone. All files and data associated with this
+              project will be premanently removed.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isLoading}>Cancel</AlertDialogCancel>
+            <AlertDialogAction 
+            onClick={handleDeleteProject}
+            disabled={isLoading}
+            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {isLoading ? "Deleting..." : "Delete Project"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 };
