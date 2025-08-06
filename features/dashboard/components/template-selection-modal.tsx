@@ -7,6 +7,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
@@ -20,8 +21,10 @@ import {
   Server,
   Star,
   UserCircleIcon,
+  Zap,
 } from "lucide-react";
 import Image from "next/image";
+import { title } from "process";
 import React, { useState } from "react";
 
 type TemplateSelectModalProps = {
@@ -176,8 +179,40 @@ const TemplateSelectModal = ({
   };
 
   const handleContinue = () => {
-    setStep("configure")
-  }
+    setStep("configure");
+  };
+
+  const handleBack = () => {
+    setStep("select");
+  };
+
+  const handleCreateproject = () => {
+    if (selectedTemplate) {
+      const templateMap: Record<
+        string,
+        "REACT" | "NEXTJS" | "EXPRESS" | "VUE" | "HONO" | "ANGULAR"
+      > = {
+        react: "REACT",
+        nextjs: "NEXTJS",
+        express: "EXPRESS",
+        vue: "VUE",
+        hono: "HONO",
+        angular: "ANGULAR",
+      };
+
+      const template = templates.find((t) => t.id === selectedTemplate);
+      onSubmit({
+        title: projectName || `New ${template?.name} Project`,
+        template: templateMap[selectedTemplate] || "REACT",
+        description: template?.description
+      })
+      
+      onClose()
+      setStep("select")
+      setSelectedTemplate(null)
+      setProjectName("")
+    }
+  };
 
   return (
     <Dialog
@@ -330,32 +365,79 @@ const TemplateSelectModal = ({
                 </div>
               </RadioGroup>
 
-<div className="flex justify-between gap-3 mt-4 pt-4 border-t">
-              <div className="flex items-center text-sm text-muted-foreground">
-                <Clock size={14} className="mr-1" />
-                <span>
-                  Estimated setup time:{" "}
-                  {selectedTemplate ? "2-5 minutes" : "Select a template"}
-                </span>
+              <div className="flex justify-between gap-3 mt-4 pt-4 border-t">
+                <div className="flex items-center text-sm text-muted-foreground">
+                  <Clock size={14} className="mr-1" />
+                  <span>
+                    Estimated setup time:{" "}
+                    {selectedTemplate ? "2-5 minutes" : "Select a template"}
+                  </span>
+                </div>
+                <div className="flex gap-3">
+                  <Button variant="outline" onClick={onClose}>
+                    Cancel
+                  </Button>
+                  <Button
+                    className="bg-[#E93F3F] hover:bg-[#d03636]"
+                    disabled={!selectedTemplate}
+                    onClick={handleContinue}
+                  >
+                    Continue <ChevronRight size={16} className="ml-1" />
+                  </Button>
+                </div>
               </div>
-              <div className="flex gap-3">
-                <Button variant="outline" onClick={onClose}>
-                  Cancel
-                </Button>
-                <Button
-                  className="bg-[#E93F3F] hover:bg-[#d03636]"
-                  disabled={!selectedTemplate}
-                  onClick={handleContinue}
-                >
-                  Continue <ChevronRight size={16} className="ml-1" />
-                </Button>
-              </div>
-            </div>
-
             </div>
           </>
         ) : (
-          <>Configure</>
+          <>
+            <DialogHeader>
+              <DialogTitle className="text-2xl font-bold text-[#e93f3f] flex items-center gap-2">
+                Configure Your Project
+              </DialogTitle>
+              <DialogDescription>
+                {templates.find((t) => t.id === selectedTemplate)?.name} Project
+                Configaration
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="flex flex-col gap-6 py-4">
+              <div className="flex flex-col gap-2">
+                <Label htmlFor="project-name">Project Name</Label>
+                <Input
+                  id="project-name"
+                  placeholder="Enter project name here..."
+                  value={projectName}
+                  onChange={(e) => setProjectName(e.target.value)}
+                />
+              </div>
+
+              <div className="p-4 shadow-[0_0_0_1px_#E93F3F,0_8px_20px_rgba(233,63,63,0.15)] rounded-lg border">
+                <h3 className="font-medium mb-2">Selected Template Features</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  {templates
+                    .find((t) => t.id === selectedTemplate)
+                    ?.features.map((feature) => (
+                      <div key={feature} className="flex items-center gap-2">
+                        <Zap size={14} className="text-[#E93F3F]" />
+                        <span className="text-sm">{feature}</span>
+                      </div>
+                    ))}
+                </div>
+              </div>
+
+              <div className="flex justify-between gap-3 mt-4 pt-4 border-t">
+                <Button variant="outline" onClick={handleBack}>
+                  Back
+                </Button>
+                <Button
+                  className="bg-[#E93F3f] hover:bg-[#d03636]"
+                  onClick={handleCreateproject}
+                >
+                  Continue
+                </Button>
+              </div>
+            </div>
+          </>
         )}
       </DialogContent>
     </Dialog>
