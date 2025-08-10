@@ -6,6 +6,7 @@ import {
 } from "@/components/ui/sidebar";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import TemplateFileTree from "@/features/playground/components/template-file-tree";
+import { useFileExplorer } from "@/features/playground/hooks/useExplorar";
 import { usePlayground } from "@/features/playground/hooks/usePlayground";
 import { useParams } from "next/navigation";
 import React from "react";
@@ -13,7 +14,26 @@ import React from "react";
 const Page = () => {
   const { id } = useParams<{ id: string }>();
   const {playgroundData, templateData, isLoading, error, loadPlayground, saveTemplateData } = usePlayground(id);
-  console.log(playgroundData)
+  const {
+    activeFileId,
+    closeAllFiles,
+    openFile,
+    closeFile,
+    editorContent,
+    updateFileContent,
+    handleAddFile,
+    handleAddFolder,
+    handleDeleteFile,
+    handleDeleteFolder,
+    handleRenameFile,
+    handleRenameFolder,
+    openFiles,
+    setTemplateData,
+    setActiveFileId,
+    setPlaygroundId,
+    setOpenFiles,
+  } = useFileExplorer();
+  
   return (
     <div>
       <>
