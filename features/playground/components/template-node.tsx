@@ -79,9 +79,11 @@ const TemplateNode = ({
 }: TemplateNodeProps) => {
   const isValidItem = item && typeof item === "object";
   const isFolder = isValidItem && "folderName" in item;
-
+  const [isNewFileDialogOpen, setIsNewFileDialogOpen] = useState(false);
+  const [isNewFolderDialogOpen, setIsNewFolderDialogOpen] = useState(false);
+  const [isRenameDialogOpen, setIsRenameDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isOpen, setIsOpen] = useState(level < 2);
-
   if (!isValidItem) return null;
 
   if (!isFolder) {
@@ -178,19 +180,19 @@ const TemplateNode = ({
           <CollapsibleContent>
             <SidebarMenuSub>
               {folder.items.map((childItem, index) => (
-                <TemplateNode 
-                key={index}
-                    item={childItem}
-                    onFileSelect={onFileSelect}
-                    selectedFile={selectedFile}
-                    level={0}
-                    path=""
-                    onAddFile={onAddFile}
-                    onAddFolder={onAddFolder}
-                    onDeleteFile={onDeleteFile}
-                    onDeleteFolder={onDeleteFolder}
-                    onRenameFile={() => {}}
-                    onRenameFolder={(onRenameFolder => {})}
+                <TemplateNode
+                  key={index}
+                  item={childItem}
+                  onFileSelect={onFileSelect}
+                  selectedFile={selectedFile}
+                  level={0}
+                  path=""
+                  onAddFile={onAddFile}
+                  onAddFolder={onAddFolder}
+                  onDeleteFile={onDeleteFile}
+                  onDeleteFolder={onDeleteFolder}
+                  onRenameFile={() => {}}
+                  onRenameFolder={(onRenameFolder) => {}}
                 />
               ))}
             </SidebarMenuSub>
