@@ -173,7 +173,7 @@ interface NewFileDialogProps {
   onCreateFile: (filename: string, extension: string) => void;
 }
 
-const NewFileDialog = ({
+export const NewFileDialog = ({
   isOpen,
   onClose,
   onCreateFile,
@@ -249,7 +249,7 @@ interface NewFolderDialogProps {
   onCreateFolder: (folderName: string) => void;
 }
 
-function NewFolderDialog({
+export function NewFolderDialog({
   isOpen,
   onClose,
   onCreateFolder,
@@ -311,7 +311,7 @@ interface RenameFileDialogProps {
   currentExtension: string;
 }
 
-function RenameFileDialog({
+export function RenameFileDialog({
   isOpen,
   onClose,
   onRename,
@@ -389,7 +389,7 @@ interface RenameFolderDialogProps {
   currentFolderName: string;
 }
 
-function RenameFolderDialog({
+export function RenameFolderDialog({
   isOpen,
   onClose,
   onRename,
