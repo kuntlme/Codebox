@@ -13,7 +13,14 @@ import React from "react";
 
 const Page = () => {
   const { id } = useParams<{ id: string }>();
-  const {playgroundData, templateData, isLoading, error, loadPlayground, saveTemplateData } = usePlayground(id);
+  const {
+    playgroundData,
+    templateData,
+    isLoading,
+    error,
+    loadPlayground,
+    saveTemplateData,
+  } = usePlayground(id);
   const {
     activeFileId,
     closeAllFiles,
@@ -33,11 +40,11 @@ const Page = () => {
     setPlaygroundId,
     setOpenFiles,
   } = useFileExplorer();
-  
+
   return (
     <div>
       <>
-        <TemplateFileTree data={templateData}/>
+        <TemplateFileTree data={templateData} />
 
         <SidebarInset>
           <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
@@ -46,7 +53,7 @@ const Page = () => {
 
             <div className="flex flex-1 items-center gap-2">
               <div className="flex flex-col flex-1">
-                  {playgroundData?.title || "Code Playground"}
+                {playgroundData?.title || "Code Playground"}
               </div>
             </div>
           </header>
