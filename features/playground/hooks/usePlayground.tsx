@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
-import { TemplateFolder } from "../lib/path-to-json";
+import { TemplateFolder } from "../libs/path-to-json";
 import { getPlaygroundById, saveUpdatedCode } from "../actions";
 
 interface PlaygroundData {

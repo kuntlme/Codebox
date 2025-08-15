@@ -214,7 +214,14 @@ const Page = () => {
                     <ResizablePanel
                     defaultSize={isPreviewVisible ? 50 : 100}
                     >
-                      <PlaygroundEditor />
+                      <PlaygroundEditor
+                      activeFile={activeFile} 
+                      content={activeFile?.content || ""}
+                      onContentChange={(value) => {
+                        activeFileId && updateFileContent(activeFileId, value)
+                      }}
+                      />
+
                     </ResizablePanel>
                   </ResizablePanelGroup>
                 </div>
