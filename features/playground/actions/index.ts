@@ -1,7 +1,7 @@
 "use server"
 
 import { db } from "@/lib/db"
-import { TemplateFolder } from "../lib/path-to-json";
+import { TemplateFolder } from "../libs/path-to-json";
 import { currentUser } from "@/features/auth/actions";
 
 export const getPlaygroundById = async (id: string) => {

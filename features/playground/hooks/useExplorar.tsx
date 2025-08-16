@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 import { toast } from "sonner";
 import { TemplateFile, TemplateFolder } from "../types";
-import { generateFileId } from "../lib";
+import { generateFileId } from "../libs";
 import { templatePaths } from "@/lib/template";
 
 interface FileExplorerState {
