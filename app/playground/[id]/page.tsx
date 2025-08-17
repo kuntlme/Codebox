@@ -7,7 +7,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import {
   SidebarInset,
   SidebarSeparator,
@@ -25,6 +25,8 @@ import TemplateFileTree from "@/features/playground/components/template-file-tre
 import { useFileExplorer } from "@/features/playground/hooks/useExplorar";
 import { usePlayground } from "@/features/playground/hooks/usePlayground";
 import { TemplateFile } from "@/features/playground/types";
+import WebcontainerPreview from "@/features/webContainers/components/wetcontainer-preview";
+import { useWebContainer } from "@/features/webContainers/hooks/useWebContainer";
 import { FileText, Save, Settings, X } from "lucide-react";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -59,6 +61,16 @@ const Page = () => {
     setPlaygroundId,
     setOpenFiles,
   } = useFileExplorer();
+
+  const {
+    serverUrl,
+    isLoading: containerLoading,
+    error: containterError,
+    instance,
+    writeFileSync,
+
+    //@ts-expect-error
+  } = useWebContainer({templateData});
 
   useEffect(() => {
     setPlaygroundId(id);
@@ -223,6 +235,24 @@ const Page = () => {
                       />
 
                     </ResizablePanel>
+
+                    {
+                      isPreviewVisible && 
+                      <>
+                        <ResizableHandle />
+                        <ResizablePanel defaultSize={50} />
+                        <WebcontainerPreview 
+                        templateData={templateData!}
+                        instance={instance}
+                        writeFileSync={writeFileSync}
+                        isLoading={containerLoading}
+                        error={containterError}
+                        serverUrl={serverUrl!}
+                        forceResetup= {false}
+                        />
+
+                      </>
+                    }
                   </ResizablePanelGroup>
                 </div>
 

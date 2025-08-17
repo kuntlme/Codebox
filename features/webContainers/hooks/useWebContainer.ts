@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { WebContainer } from "@webcontainer/api"
-import { TemplateFolder } from "@/features/playground/libs/path-to-json";
+import { TemplateFolder } from "@/features/playground/types";
 
 interface UseWebContainerProps {
     templateData: TemplateFolder;
@@ -51,4 +51,40 @@ export const useWebContainer = ({
             }
         }
     }, [])
+
+    const writeFileSync = useCallback(async(path: string, content: string): Promise<void> => {
+        if(!instance) {
+            throw new Error("WebContainer instance is not available");
+        }
+
+        try {
+            const pathParts = path.split("/");
+            const folderPath = pathParts.slice(0, -1).join("/");
+
+            if(folderPath){
+                await instance.fs.mkdir(folderPath, {recursive: true});
+            }
+            
+            await instance.fs.writeFile(path, content);
+        } catch (error) {
+            
+        }
+    }, [instance])
+
+    const destroy = useCallback(() => {
+        if(instance){
+            instance.teardown();
+            setInstance(null);
+            setServerUrl(null);
+        }
+    }, [instance])
+
+    return {
+        destroy,
+        error,
+        instance,
+        isLoading,
+        serverUrl,
+        writeFileSync,
+    }
 }
