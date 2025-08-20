@@ -26,7 +26,7 @@ import TemplateFileTree from "@/features/playground/components/template-file-tre
 import { useFileExplorer } from "@/features/playground/hooks/useExplorar";
 import { usePlayground } from "@/features/playground/hooks/usePlayground";
 import { TemplateFile } from "@/features/playground/types";
-import WebcontainerPreview from "@/features/webContainers/components/wetcontainer-preview";
+import WebcontainerPreview from "@/features/webContainers/components/webcontainer-preview";
 import { useWebContainer } from "@/features/webContainers/hooks/useWebContainer";
 import { AlertCircle, FileText, Save, Settings, X } from "lucide-react";
 import { useParams } from "next/navigation";

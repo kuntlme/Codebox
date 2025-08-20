@@ -1,10 +1,17 @@
 "use client";
-import { TemplateFolder } from "@/features/playground/libs/path-to-json";
 import { WebContainer } from "@webcontainer/api";
 import React, { useState, useEffect, useRef, useActionState } from "react";
 import { transformToWebContainerFormat } from "../hooks/transformer";
 import { CheckCircle, Loader2, XCircle } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import TerminalComponent from "./terminal";
+import { TemplateFolder } from "@/features/playground/types";
+import { ClientTerminalComponent } from "./terminal-client";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
 
 interface WebcontainerPreviewProps {
   templateData: TemplateFolder;
@@ -39,6 +46,8 @@ const WebcontainerPreview = ({
   const [isSetupComplete, setIsSetupComplete] = useState(false);
   const [isSetupInProgress, setIsSetupInProgress] = useState(false);
 
+  const terminalRef = useRef<any>(null);
+
   useEffect(() => {
     async function setUpContainer() {
       if (!instance || isSetupComplete || isSetupInProgress) return;
@@ -53,12 +62,21 @@ const WebcontainerPreview = ({
           );
 
           if (packageJsonExists) {
-            // implement terminal related stuff
+            if (terminalRef.current?.writeToTerminal) {
+              terminalRef.current.writeToTerminal(
+                "🔄 Reconnecting to existing WebContainer session...\r\n"
+              );
+            }
           }
 
           instance.on("server-ready", (port: number, url: string) => {
             console.log(`Reconnected to the server on port ${port} at ${url}`);
             //terminal
+            if (terminalRef.current.writeToTerminal) {
+              terminalRef.current.writeToTerminal(
+                `🌐 Reconnected to server at ${url}\r\n`
+              );
+            }
 
             setPreviewUrl(url);
             setLoadingState((prev) => ({
@@ -79,7 +97,12 @@ const WebcontainerPreview = ({
         }));
         setCurrentStep(1);
 
-        // terminal related stuff
+        // Write to terminal
+        if (terminalRef.current?.writeToTerminal) {
+          terminalRef.current.writeToTerminal(
+            "🔄 Transforming template data...\r\n"
+          );
+        }
 
         //@ts-expect-error
         const files = transformToWebContainerFormat(templateData);
@@ -91,7 +114,12 @@ const WebcontainerPreview = ({
         }));
         setCurrentStep(2);
 
-        // terminal related stuff
+        // Step 2: Mount files
+        if (terminalRef.current?.writeToTerminal) {
+          terminalRef.current.writeToTerminal(
+            "📁 Mounting files to WebContainer...\r\n"
+          );
+        }
 
         await instance.mount(files);
 
@@ -102,12 +130,21 @@ const WebcontainerPreview = ({
         }));
         setCurrentStep(3);
 
+        // Step 3: Install dependencies
+        if (terminalRef.current?.writeToTerminal) {
+          terminalRef.current.writeToTerminal(
+            "📦 Installing dependencies...\r\n"
+          );
+        }
+
         const installProcess = await instance.spawn("npm", ["install"]);
 
         installProcess.output.pipeTo(
           new WritableStream({
             write(data) {
-              //write directly to terminal
+              if (terminalRef?.current?.writeToTerminal) {
+                terminalRef.current.writeToTerminal(data);
+              }
             },
           })
         );
@@ -119,12 +156,26 @@ const WebcontainerPreview = ({
             `Failed to install dependencies. Exit code: ${installExitCode}`
           );
         }
+
+        if (terminalRef.current?.writeToTerminal) {
+          terminalRef.current.writeToTerminal(
+            "✅ Dependencies installed successfully\r\n"
+          );
+        }
+
         setLoadingState((prev) => ({
           ...prev,
           installing: false,
           starting: true,
         }));
         setCurrentStep(4);
+
+        // Step 4: Start the server
+        if (terminalRef.current?.writeToTerminal) {
+          terminalRef.current.writeToTerminal(
+            "🚀 Starting development server...\r\n"
+          );
+        }
 
         const startProcess = await instance.spawn("npm", ["run", "start"]);
 
@@ -152,6 +203,10 @@ const WebcontainerPreview = ({
         console.error("Error setting up container:", error);
         const errorMessage =
           error instanceof Error ? error.message : String(error);
+
+        if (terminalRef.current?.writeToTerminal) {
+          terminalRef.current.writeToTerminal(`❌ Error: ${errorMessage}\r\n`);
+        }
 
         setSetupError(errorMessage);
         setIsSetupInProgress(false);
@@ -265,20 +320,39 @@ const WebcontainerPreview = ({
             </div>
           </div>
 
-          <div className="flex-1 p-4">Terminal</div>
-        </div>
-      ) : (
-        <div className="f-full flex flex-col">
-          <div className="flex-1">
-            <iframe
-              src={previewUrl}
-              className="w-full h-full border-none"
-              title="WebContainer Preview"
+          <div className="flex-1 p-4">
+            <ClientTerminalComponent
+              ref={terminalRef}
+              webContainerInstance={instance}
+              theme="dark"
+              className="h-full"
             />
           </div>
-          <div className="h-64 border-t">
-            <h1>Terminal Component</h1>
-          </div>
+        </div>
+      ) : (
+        <div className="h-full flex flex-col">
+          <ResizablePanelGroup direction="vertical" className="">
+            <ResizablePanel>
+              <div className="flex-1 h-full">
+                <iframe
+                  src={previewUrl}
+                  className="w-full h-full border-none"
+                  title="WebContainer Preview"
+                />
+              </div>
+            </ResizablePanel>
+            <ResizableHandle />
+            <ResizablePanel>
+              <div className="h-full border-t">
+                <ClientTerminalComponent
+                  ref={terminalRef}
+                  webContainerInstance={instance}
+                  theme="dark"
+                  className="h-full"
+                />
+              </div>
+            </ResizablePanel>
+          </ResizablePanelGroup>
         </div>
       )}
     </div>
