@@ -6,6 +6,12 @@ import { CheckCircle, Loader2, XCircle } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import TerminalComponent from "./terminal";
 import { TemplateFolder } from "@/features/playground/types";
+import { ClientTerminalComponent } from "./terminal-client";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
 
 interface WebcontainerPreviewProps {
   templateData: TemplateFolder;
@@ -314,32 +320,39 @@ const WebcontainerPreview = ({
             </div>
           </div>
 
-          {/* <div className="flex-1 p-4">
-            <TerminalComponent
+          <div className="flex-1 p-4">
+            <ClientTerminalComponent
               ref={terminalRef}
               webContainerInstance={instance}
               theme="dark"
               className="h-full"
             />
-          </div> */}
+          </div>
         </div>
       ) : (
         <div className="h-full flex flex-col">
-          <div className="flex-1">
-            <iframe
-              src={previewUrl}
-              className="w-full h-full border-none"
-              title="WebContainer Preview"
-            />
-          </div>
-          {/* <div className="h-64 border-t">
-            <TerminalComponent
-              ref={terminalRef}
-              webContainerInstance={instance}
-              theme="dark"
-              className="h-full"
-            />
-          </div> */}
+          <ResizablePanelGroup direction="vertical" className="">
+            <ResizablePanel>
+              <div className="flex-1 h-full">
+                <iframe
+                  src={previewUrl}
+                  className="w-full h-full border-none"
+                  title="WebContainer Preview"
+                />
+              </div>
+            </ResizablePanel>
+            <ResizableHandle />
+            <ResizablePanel>
+              <div className="h-full border-t">
+                <ClientTerminalComponent
+                  ref={terminalRef}
+                  webContainerInstance={instance}
+                  theme="dark"
+                  className="h-full"
+                />
+              </div>
+            </ResizablePanel>
+          </ResizablePanelGroup>
         </div>
       )}
     </div>
