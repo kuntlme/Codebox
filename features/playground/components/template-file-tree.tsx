@@ -75,6 +75,8 @@ const TemplateFileTree = ({
   onAddFolder,
   onDeleteFile,
   onDeleteFolder,
+  onRenameFile,
+  onRenameFolder,
 }: TemplateFileTreeProps) => {
   const isRootFolder = data && typeof data === "object" && "folderName" in data;
   const [isNewFileDialogOpen, setIsNewFileDialogOpen] = useState(false);
@@ -88,6 +90,29 @@ const TemplateFileTree = ({
     setIsNewFolderDialogOpen(true);
   };
 
+  const handleCreateFile = (filename: string, extension: string) => {
+    if (onAddFile && isRootFolder) {
+      const newFile: TemplateFile = {
+        filename,
+        fileExtension: extension,
+        content: "",
+      }
+      onAddFile(newFile, "")
+    }
+    setIsNewFileDialogOpen(false)
+  }
+
+  const handleCreateFolder = (folderName: string) => {
+    if (onAddFolder && isRootFolder) {
+      const newFolder: TemplateFolder = {
+        folderName,
+        items: [],
+      }
+      onAddFolder(newFolder, "")
+    }
+    setIsNewFolderDialogOpen(false)
+  }
+
   return (
     <Sidebar>
       <SidebarContent>
@@ -95,7 +120,7 @@ const TemplateFileTree = ({
           <SidebarGroupLabel>FILE EXPLORER</SidebarGroupLabel>
 
           <DropdownMenu>
-            <DropdownMenuTrigger>
+            <DropdownMenuTrigger asChild>
               <SidebarGroupAction>
                 <Plus className="h-4 w-4" />
               </SidebarGroupAction>
@@ -128,8 +153,8 @@ const TemplateFileTree = ({
                     onAddFolder={onAddFolder}
                     onDeleteFile={onDeleteFile}
                     onDeleteFolder={onDeleteFolder}
-                    onRenameFile={() => {}}
-                    onRenameFolder={(onRenameFolder) => {}}
+                    onRenameFile={onRenameFile}
+                    onRenameFolder={onRenameFolder}
                   />
                 ))
               ) : (
@@ -143,8 +168,8 @@ const TemplateFileTree = ({
                   onAddFolder={onAddFolder}
                   onDeleteFile={onDeleteFile}
                   onDeleteFolder={onDeleteFolder}
-                  onRenameFile={() => {}}
-                  onRenameFolder={() => {}}
+                  onRenameFile={onRenameFile}
+                  onRenameFolder={onRenameFolder}
                 />
               )}
             </SidebarMenu>
@@ -155,13 +180,13 @@ const TemplateFileTree = ({
       <NewFileDialog
         isOpen={isNewFileDialogOpen}
         onClose={() => setIsNewFileDialogOpen(false)}
-        onCreateFile={() => {}}
+        onCreateFile={handleCreateFile}
       />
 
       <NewFolderDialog
         isOpen={isNewFolderDialogOpen}
         onClose={() => setIsNewFolderDialogOpen(false)}
-        onCreateFolder={() => {}}
+        onCreateFolder={handleCreateFolder}
       />
     </Sidebar>
   );
