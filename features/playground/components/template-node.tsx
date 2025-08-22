@@ -282,14 +282,14 @@ const TemplateNode = ({
                   item={childItem}
                   onFileSelect={onFileSelect}
                   selectedFile={selectedFile}
-                  level={0}
-                  path=""
+                  level={level + 1}
+                  path={currentPath}
                   onAddFile={onAddFile}
                   onAddFolder={onAddFolder}
                   onDeleteFile={onDeleteFile}
                   onDeleteFolder={onDeleteFolder}
-                  onRenameFile={() => {}}
-                  onRenameFolder={(onRenameFolder) => {}}
+                  onRenameFile={onRenameFile}
+                  onRenameFolder={onRenameFolder}
                 />
               ))}
             </SidebarMenuSub>
