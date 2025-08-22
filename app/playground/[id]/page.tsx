@@ -242,15 +242,17 @@ const Page = () => {
         );
         throw error;
       }
-    }, [
-    activeFileId,
+    },
+    [
+      activeFileId,
       openFiles,
       writeFileSync,
       instance,
       saveTemplateData,
       setTemplateData,
       setOpenFiles,
-  ]);
+    ]
+  );
 
   const handleSaveAll = async () => {
     const unsavedFiles = openFiles.filter((f) => f.hasUnsavedChanges);
