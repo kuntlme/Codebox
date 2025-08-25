@@ -27,13 +27,14 @@ import {
 } from "@/components/ui/tooltip";
 import PlaygroundEditor from "@/features/playground/components/playground-editor";
 import TemplateFileTree from "@/features/playground/components/template-file-tree";
+import ToggleAI from "@/features/playground/components/toggle-ai";
 import { useFileExplorer } from "@/features/playground/hooks/useExplorar";
 import { usePlayground } from "@/features/playground/hooks/usePlayground";
 import { findFilePath } from "@/features/playground/libs";
 import { TemplateFile, TemplateFolder } from "@/features/playground/types";
 import WebcontainerPreview from "@/features/webContainers/components/webcontainer-preview";
 import { useWebContainer } from "@/features/webContainers/hooks/useWebContainer";
-import { AlertCircle, FileText, Save, Settings, X } from "lucide-react";
+import { AlertCircle, Bot, FileText, Save, Settings, X } from "lucide-react";
 import { useParams } from "next/navigation";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
@@ -385,7 +386,14 @@ const Page = () => {
                 </Tooltip>
 
                 {/* TODO: toggle ai */}
-
+                <ToggleAI
+                isEnabled={true}
+                onToggle={() => {}}
+                suggestionLoading={false}
+                
+                />
+                
+                
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button size={"sm"} variant={"outline"}>
