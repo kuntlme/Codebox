@@ -25,6 +25,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useAISuggestions } from "@/features/ai/hooks/useAISuggestion";
 import PlaygroundEditor from "@/features/playground/components/playground-editor";
 import TemplateFileTree from "@/features/playground/components/template-file-tree";
 import ToggleAI from "@/features/playground/components/toggle-ai";
@@ -50,6 +51,7 @@ const Page = () => {
     loadPlayground,
     saveTemplateData,
   } = usePlayground(id);
+  const aiSuggestion = useAISuggestions();
   const {
     activeFileId,
     closeAllFiles,
@@ -387,9 +389,9 @@ const Page = () => {
 
                 {/* TODO: toggle ai */}
                 <ToggleAI
-                isEnabled={true}
-                onToggle={() => {}}
-                suggestionLoading={false}
+                isEnabled={aiSuggestion.isEnabled}
+                onToggle={aiSuggestion.toggleEnabled}
+                suggestionLoading={aiSuggestion.isLoading}
                 
                 />
                 
@@ -482,6 +484,12 @@ const Page = () => {
                           activeFileId &&
                             updateFileContent(activeFileId, value);
                         }}
+                        suggestion={aiSuggestion.suggestion}
+                        suggestionLoading={aiSuggestion.isLoading}
+                        suggestionPosition={aiSuggestion.position}
+                        onAcceptSuggestion={(editor, monaco) => aiSuggestion.acceptSuggestion(editor, monaco)}
+                        onRejectSuggestion={(editor) => aiSuggestion.rejectSuggestion(editor)}
+                        onTriggerSuggestion={(type, editor) => aiSuggestion.fetchSuggestion(type, editor)}
                       />
                     </ResizablePanel>
 

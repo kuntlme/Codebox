@@ -134,7 +134,7 @@ async function generateSuggestion(prompt: string): Promise<string> {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                model: "codellama:latest",
+                model: "codellama:7b-instruct",
                 prompt,
                 stream: false,
                 options: {
@@ -143,6 +143,8 @@ async function generateSuggestion(prompt: string): Promise<string> {
                 },
             }),
         })
+
+        console.log(response);
 
         if (!response.ok) {
             throw new Error(`AI service error: ${response.statusText}`)
