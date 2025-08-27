@@ -134,15 +134,16 @@ async function generateSuggestion(prompt: string): Promise<string> {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-                model: "codellama:7b-instruct",
+                model: process.env.OLLAMM_AI_MODEL_NAME,  // ✅ Fixed typo
                 prompt,
                 stream: false,
                 options: {
                     temperature: 0.7,
-                    max_tokens: 300,
+                    num_ctx: 4096,           // Context window size
+                    num_predict: 300,        // ✅ Correct name instead of max_tokens
                 },
             }),
-        })
+        });
 
         console.log(response);
 
