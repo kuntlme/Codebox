@@ -18,7 +18,7 @@ const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
   const formattedPlaygroundData = playgroundData?.map((playground) => ({
     id: playground.id,
     name: playground.title,
-    starred: playground.starmark?.[0]?.inMarked || false,
+    starred: playground.starmark?.[0]?.isMarked || false,
     icon: technologyIconMap[playground.template] || "Code2"
   })) || [];
 
@@ -27,7 +27,6 @@ const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
       <div className="flex min-h-screen w-full overflow-x-hidden">
         <DashboardSidebar initialPlaygroundData={formattedPlaygroundData} />
         <main className="flex-1">
-            <SidebarTrigger />
             {children}
         </main>
       </div>

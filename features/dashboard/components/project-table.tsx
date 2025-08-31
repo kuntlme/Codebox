@@ -52,6 +52,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import MarkedToggleButton from "./mark-toggle-button";
 
 interface ProjectTableProps {
   projects: Project[];
@@ -216,10 +217,12 @@ const ProjectTable = ({
                     </DropdownMenuTrigger>
                     <DropdownMenuContent>
                       <DropdownMenuItem asChild>
-                        {/* <MarkedToggleButton
-                          markedForRevision={project.Starmark[0]?.isMarked}
+                        <MarkedToggleButton
                           id={project.id}
-                        /> */}
+                          title={project.title}
+                          markedForRevision={project?.starmark[0]?.isMarked}
+                          onLoading={setIsLoading}
+                        />
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
                         <Link
