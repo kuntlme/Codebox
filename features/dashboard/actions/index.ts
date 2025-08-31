@@ -107,3 +107,43 @@ export const duclicateProjectById = async (id: string) => {
         return null
     }
 }
+
+export const toggleStarById = async (id: string) => {
+    const user = await currentUser();
+    try{
+        const project = await db.starMark.findFirst({
+            where: {
+                userId: user?.id,
+                playgroundId: id,
+            }
+        });
+
+        if(!project) {
+            const newStarredProject = await db.starMark.create({
+                data: {
+                    userId: user?.id!,
+                    playgroundId: id,
+                    isMarked: true,
+                }
+            })
+        }
+        else{
+            await db.starMark.update({
+                where: {
+                    userId_playgroundId: {
+                        userId: user?.id!,
+                        playgroundId: id,
+                    }
+                },
+                data: {
+                    isMarked: !project.isMarked
+                }
+            })
+        }
+
+        revalidatePath("/dashboard");
+    }
+    catch(error){
+        console.log(error);
+    }
+}
